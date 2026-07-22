@@ -3,7 +3,22 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from datetime import datetime
 
+MONTHS_RU = {
+    1: "января",
+    2: "февраля",
+    3: "марта",
+    4: "апреля",
+    5: "мая",
+    6: "июня",
+    7: "июля",
+    8: "августа",
+    9: "сентября",
+    10: "октября",
+    11: "ноября",
+    12: "декабря",
+}
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
@@ -54,7 +69,16 @@ def safe_eval(expr: str) -> float:
     if isinstance(result, (int, float)):
         return float(result)
     raise ValueError("Результат не является числом")
-
+@dp.message(Command("date"))
+async def cmd_date(message: types.Message):
+    now = datetime.now()
+    day = now.day
+    month = MONTHS_RU[now.month]
+    year = now.year
+    hour = now.hour
+    minute = now.minute
+    response = f"{day} {month} {year}, {hour:02d}:{minute:02d}"
+    await message.answer(response)
 @dp.message(Command("calc"))
 async def cmd_calc(message: types.Message):
     args = message.text.split(maxsplit=1)
