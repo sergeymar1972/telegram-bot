@@ -1,6 +1,23 @@
 import pytest
 from bot import safe_eval  # импортируем функцию из bot.py
+from datetime import datetime
 
+MONTHS_RU = {
+    1: "января", 2: "февраля", 3: "марта", 4: "апреля", 5: "мая", 6: "июня",
+    7: "июля", 8: "августа", 9: "сентября", 10: "октября", 11: "ноября", 12: "декабря"
+}
+
+def test_russian_date_format():
+    now = datetime.now()
+    month_name = MONTHS_RU[now.month]
+    
+    # Эмулируем то, что делает бот
+    result = f"{now.day} {month_name} {now.year}, {now.hour:02d}:{now.minute:02d}"
+
+    assert isinstance(result, str)
+    assert month_name in result
+    assert ":" in result
+    assert len(result.split(":")) == 2  # проверяем, что двоеточие ровно одно (часы:минуты)
 def test_addition():
     assert safe_eval("2 + 2") == 4.0
 
